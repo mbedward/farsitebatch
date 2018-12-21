@@ -1,0 +1,21 @@
+Package: farsitebatch
+Type: Package
+Title: Run FARSITE simulations in batch mode
+Version: 0.0.1
+Date: 2018-12-20
+Description: Run FARSITE simulations in batch mode.
+Authors@R: c(
+  person("Michael", "Bedward", email = "michael.bedward@gmail.com", role = c("aut", "cre")),
+  person("Beatriz", "Duguy", email = "bduguy@ub.edu", role="aut")
+  )
+URL: https://github.com/mbedward/farsitebatch
+BugReports: https://github.com/mbedward/farsitebatch/issues
+Depends: R (>= 3.5.1)
+Imports: glue,
+  raster,
+  sf,
+  stringr
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
