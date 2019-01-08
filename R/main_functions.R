@@ -123,6 +123,31 @@ create_ignition_polygon <- function(path, xy, width, crs = sf::NA_crs_) {
 }
 
 
+#' Run a FARSITE simulation
+#'
+#' @param lcp Full path to the landscape file.
+#' @param input Full path to the input file.
+#' @param ignition Full path to the ignition shapefile.
+#' @param outdir Full path to the directory for output files.
+#' @param prefix Prefix to use for output file names.
+#'
+#' @return An integer indicating success (zero) or failure (non-zero). 127
+#'   indicates that FARSITE could not be run for some reason. 124 indicates
+#'   that the simulation timed out.
+#'
+#' @export
+#'
+run_farsite <- function(lcp, input, ignition,
+                        outdir, prefix = "sim_") {
+
+  args <- format_run_args(path.lcp = lcp, path.input = input, path.ignition = ignition, outdir, prefix)
+  runfile <- tempfile(pattern = "farsite_", fileext = ".run")
+  cat(args, file = runfile)
+
+  system2("farsite", runfile, intern = FALSE)
+}
+
+
 #' Format FARSITE run command arguments
 #'
 #' @param path.lcp Path to the landscape (.lcp) file.
@@ -143,7 +168,6 @@ format_run_args <- function(path.lcp, path.input, path.ignition, path.outdir, pr
   out <- file.path(path.outdir, prefix)
   paste(path.lcp, path.input, path.ignition, "0", out, "0")
 }
-
 
 
 .check_file_exists <- function(...) {
