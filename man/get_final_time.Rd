@@ -17,5 +17,6 @@ A named numeric vector with elements 'month', 'day' and 'hour'.
 \description{
 Retrieves the month, day and time (24 hour format) of the last fire
 perimeter update. This can be used, for example, to check if the fire was still
-active at the end of the burn period specified of the simulation.
+active at the end of the burn period specified of the simulation. If the fire
+did not burn, a vector of \code{NA} values is returned.
 }

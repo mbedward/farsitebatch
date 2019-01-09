@@ -1,7 +1,7 @@
 Package: farsitebatch
 Type: Package
 Title: Run FARSITE simulations in batch mode
-Version: 0.0.1
+Version: 0.0.2
 Date: 2018-12-20
 Description: Run FARSITE simulations in batch mode.
 Authors@R: c(
