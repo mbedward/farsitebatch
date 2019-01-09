@@ -3,6 +3,7 @@
 export(create_ignition_polygon)
 export(create_input_file)
 export(format_run_args)
-export(get_crownfire_area)
 export(get_fire_area)
+export(get_fire_summary)
+export(get_firetype_area)
 export(run_farsite)
