@@ -285,6 +285,59 @@ get_intensity_hist <- function(outdir, prefix,
 }
 
 
+#' Detect whether a fire reached given locations
+#'
+#' This is a convenience function to test if a fire reached one or more target locations
+#' represented by a set of point coordinates. Each point is tested by checking the
+#' FARSITE fire arrival time raster at that location.
+#'
+#' @param outdir Full path to the directory containing output files.
+#' @param prefix Prefix used for the output file names.
+#'
+#' @param pts A matrix or data frame of point coordinates (X-Y order). The units
+#'   and coordinate reference sytem are assumed to match the FARSITE output rasters.
+#'
+#' @return The number of locations reached by the fire.
+#'
+#' @export
+#'
+count_fire_locations <- function(outdir, prefix, pts) {
+  if (!inherits(pts, c("matrix", "data.frame")) || ncol(pts) != 2)
+    stop("Argument pts should be a two-column matrix or data frame of point coordinates")
+
+  fname <- paste0(prefix, "_ArrivalTime.asc")
+  r <- raster(file.path(outdir, fname))
+
+  x <- raster::extract(r, pts)
+  sum(!is.na(x))
+}
+
+
+#' Get last fire time step
+#'
+#' Retrieves the month, day and time (24 hour format) of the last fire
+#' perimeter update. This can be used, for example, to check if the fire was still
+#' active at the end of the burn period specified of the simulation.
+#'
+#' @param outdir Full path to the directory containing output files.
+#' @param prefix Prefix used for the output file names.
+#'
+#' @return A named numeric vector with elements 'month', 'day' and 'hour'.
+#'
+#' @export
+#'
+get_final_time <- function(outdir, prefix) {
+  fname <- paste0(prefix, "_Perimeters.shp")
+  perim <- sf::st_read(file.path(outdir, fname), quiet = TRUE)
+
+  nr <- nrow(perim)
+  out <- unlist( as.data.frame(perim)[nr, c("Month", "Day", "Hour")] )
+  names(out) <- tolower(names(out))
+
+  out
+}
+
+
 .check_file_exists <- function(...) {
   for (f in list(...)) if (!file.exists(f)) stop("Cannot find file: ", f)
 }
