@@ -4,8 +4,8 @@
 \alias{create_input_file}
 \title{Create a FARSITE input file}
 \usage{
-create_input_file(out.path, start.time, end.time, path.fms, raws.elev,
-  raws.units, path.raws, path.fmd = NULL, path.ros.adj = NULL)
+create_input_file(start.time, end.time, path.fms, raws.elev, raws.units,
+  path.raws, path.fmd = NULL, path.ros.adj = NULL)
 }
 \arguments{
 \item{start.time}{Character string for start date and time, e.g. '08 28 0000'.}
