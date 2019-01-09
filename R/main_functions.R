@@ -277,7 +277,7 @@ get_intensity_hist <- function(outdir, prefix,
   fname <- paste0(prefix, "_Intensity.asc")
   r <- raster(file.path(outdir, fname))
 
-  h <- hist(r, breaks = breaks, right = right)
+  h <- hist(r, maxpixels = ncell(r), breaks = breaks, right = TRUE, plot = FALSE)
 
   cellarea <- prod(res(r))
 
