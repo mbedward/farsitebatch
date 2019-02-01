@@ -37,12 +37,16 @@ create_input_file <- function(start.time,
                               path.fmd = NULL,
                               path.ros.adj = NULL) {
 
-  # Read a file of tabular dat, drop any blank lines,
+  # Read a file of tabular dat, drop any blank lines or comment lines
   # and return count of data records and the data as a character string.
   .read_file <- function(path) {
     x <- readLines(path)
+
     x <- stringr::str_trim(x)
     x <- x[x != ""]
+
+    comment <- stringr::str_detect(x, "^\\s*\\#")
+    x <- x[!comment]
 
     n <- length(x)
 
