@@ -1,7 +1,7 @@
 Package: farsitebatch
 Type: Package
 Title: Run FARSITE simulations in batch mode
-Version: 0.0.5
+Version: 0.0.6
 Date: 2019-02-13
 Description: Run FARSITE simulations in batch mode.
 Authors@R: c(
@@ -11,7 +11,8 @@ Authors@R: c(
 URL: https://github.com/mbedward/farsitebatch
 BugReports: https://github.com/mbedward/farsitebatch/issues
 Depends: R (>= 3.5.1)
-Imports: glue,
+Imports: dplyr,
+  glue,
   raster,
   sf,
   stringr
