@@ -1,8 +1,8 @@
 Package: farsitebatch
 Type: Package
 Title: Run FARSITE simulations in batch mode
-Version: 0.0.2
-Date: 2018-12-20
+Version: 0.0.3
+Date: 2019-02-13
 Description: Run FARSITE simulations in batch mode.
 Authors@R: c(
   person("Michael", "Bedward", email = "michael.bedward@gmail.com", role = c("aut", "cre")),
