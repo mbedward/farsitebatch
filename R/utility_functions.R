@@ -65,8 +65,7 @@ raws_to_farsite <- function(rawsfile, wtrfile, wndfile, elev,
     buf <- buf[-1]
   }
 
-  # Different versions of FARSITE are picky about the case of the units header string
-  units <- stringr::str_to_title(units)
+  units <- toupper(units)
 
   # Read data records
   raws.names <- c("year", "month", "day", "hour", "temp", "relhum", "rain", "windspeed", "winddir", "cloud")
