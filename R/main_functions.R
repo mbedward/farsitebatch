@@ -107,11 +107,13 @@ create_input_file <- function(start.time,
       stop("You must provide either path.raws or both of path.wnd and path.wtr")
     }
 
+    wtr.switch <- ""
     wtr <- .read_file(path.wtr)
     wnd <- .read_file(path.wnd)
     wtr.units <- weather.units
     wnd.units <- weather.units
 
+    raws.switch <- "#"
     raws <- EmptyFile
     raws.units <- ""
     raws.elev <- ""
@@ -119,9 +121,11 @@ create_input_file <- function(start.time,
   } else {
     # Using RAWS data
 
+    raws.switch <- ""
     raws <- .read_file(path.raws)
     raws.units <- weather.units
 
+    wtr.switch <- "#"
     wtr <- EmptyFile
     wnd <- EmptyFile
     wtr.units <- ""

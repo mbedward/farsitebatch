@@ -18,20 +18,20 @@ FUEL_MOISTURES_DATA: {num.fms}
 
 {fmd.switch}CUSTOM_FUELS_FILE: {fmd.file}
 
-RAWS_ELEVATION: {raws.elev}
-RAWS_UNITS: {raws.units}
+{raws.switch}RAWS_ELEVATION: {raws.elev}
+{raws.switch}RAWS_UNITS: {raws.units}
 
-RAWS: {num.raws}
+{raws.switch}RAWS: {num.raws}
 {data.raws}
 
-WEATHER_DATA_UNITS: {wtr.units}
+{wtr.switch}WEATHER_DATA_UNITS: {wtr.units}
 
-WEATHER_DATA: {num.wtr}
+{wtr.switch}WEATHER_DATA: {num.wtr}
 {data.wtr}
 
-WIND_DATA_UNITS: {wtr.units}
+{wtr.switch}WIND_DATA_UNITS: {wtr.units}
 
-WIND_DATA: {num.wnd}
+{wtr.switch}WIND_DATA: {num.wnd}
 {data.wnd}
 
 FOLIAR_MOISTURE_CONTENT: 100
