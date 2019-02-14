@@ -4,8 +4,9 @@
 \alias{create_input_file}
 \title{Create a FARSITE input file}
 \usage{
-create_input_file(start.time, end.time, path.fms, raws.elev, raws.units,
-  path.raws, path.fmd = NULL, path.ros.adj = NULL)
+create_input_file(start.time, end.time, path.fms, weather.units, path.raws,
+  raws.elev, path.wtr = NULL, path.wnd = NULL, path.fmd = NULL,
+  path.ros.adj = NULL)
 }
 \arguments{
 \item{start.time}{Character string for start date and time, e.g. '08 28 0000'.}
@@ -16,17 +17,31 @@ create_input_file(start.time, end.time, path.fms, raws.elev, raws.units,
 six-column format expected by FARSITE. Note, only the data records should
 be included in the file without any header information.}
 
-\item{raws.elev}{Elevation value.}
-
-\item{raws.units}{Units of measurement: one of 'Metric' or 'English'.}
+\item{weather.units}{system of measurement for weather variables: either 'METRIC' or 'ENGLISH'.}
 
 \item{path.raws}{Path to a file of tabular RAWS weather data in the
 ten-column format expected by FARSITE. Note, only the data records should
 be included in the file without any header information.}
 
+\item{raws.elev}{Elevation of weather station that provided the RAWS data.
+This is ignored if path.raws is missing or \code{NULL} and weather data is provided as
+separate files for daily summary data (\code{path.wtr}) and wind data (\code{path.wnd}).}
+
+\item{path.wtr}{Path to a file of daily summary data for temperature,
+rainfall and humidity in the format expected by FARSITE. Ignored if
+\code{path.raws} is specified. Any comment lines or header lines are
+ignored. Units ("METRIC" or "ENGLISH") should be specified via the
+\code{weather.units} parameter.}
+
 \item{path.fmd}{Optional path to a custom fuels file.}
 
 \item{path.ros.adj}{Optional path to the ROS adjustment file.}
+
+\item{path.wtr}{Path to a file of hourly data for wind speed, wind direction
+and cloud cover in the format expected by FARSITE. Ignored if
+\code{path.raws} is specified. Any comment lines or header lines are
+ignored. Units ("METRIC" or "ENGLISH") should be specified via the
+\code{weather.units} parameter.}
 }
 \value{
 Contents of the input file as a single character string.
@@ -34,5 +49,7 @@ Contents of the input file as a single character string.
 \description{
 This function creates the contents for a FARSITE input file from a template
 (package file \code{extdata/input_template.txt}) and a set of values for
-variable components.
+variable components. Note that you should specify either the path to a file
+of RAWS-format weather data (via \code{path.raws}) or the paths to separate
+weather and wind files (\code{path.wtr} and \code{path.wnd}).
 }

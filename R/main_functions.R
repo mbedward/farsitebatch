@@ -2,7 +2,9 @@
 #'
 #' This function creates the contents for a FARSITE input file from a template
 #' (package file \code{extdata/input_template.txt}) and a set of values for
-#' variable components.
+#' variable components. Note that you should specify either the path to a file
+#' of RAWS-format weather data (via \code{path.raws}) or the paths to separate
+#' weather and wind files (\code{path.wtr} and \code{path.wnd}).
 #'
 #' @param start.time Character string for start date and time, e.g. '08 28 0000'.
 #'
@@ -12,13 +14,27 @@
 #'   six-column format expected by FARSITE. Note, only the data records should
 #'   be included in the file without any header information.
 #'
-#' @param raws.elev Elevation value.
-#'
-#' @param raws.units Units of measurement: one of 'Metric' or 'English'.
+#' @param weather.units system of measurement for weather variables: either 'METRIC' or 'ENGLISH'.
 #'
 #' @param path.raws Path to a file of tabular RAWS weather data in the
 #'   ten-column format expected by FARSITE. Note, only the data records should
 #'   be included in the file without any header information.
+#'
+#' @param raws.elev Elevation of weather station that provided the RAWS data.
+#'   This is ignored if path.raws is missing or \code{NULL} and weather data is provided as
+#'   separate files for daily summary data (\code{path.wtr}) and wind data (\code{path.wnd}).
+#'
+#' @param path.wtr Path to a file of daily summary data for temperature,
+#'   rainfall and humidity in the format expected by FARSITE. Ignored if
+#'   \code{path.raws} is specified. Any comment lines or header lines are
+#'   ignored. Units ("METRIC" or "ENGLISH") should be specified via the
+#'   \code{weather.units} parameter.
+#'
+#' @param path.wtr Path to a file of hourly data for wind speed, wind direction
+#'   and cloud cover in the format expected by FARSITE. Ignored if
+#'   \code{path.raws} is specified. Any comment lines or header lines are
+#'   ignored. Units ("METRIC" or "ENGLISH") should be specified via the
+#'   \code{weather.units} parameter.
 #'
 #' @param path.fmd Optional path to a custom fuels file.
 #'
@@ -31,14 +47,18 @@
 create_input_file <- function(start.time,
                               end.time,
                               path.fms,
-                              raws.elev,
-                              raws.units,
+                              weather.units,
                               path.raws,
+                              raws.elev,
+                              path.wtr = NULL,
+                              path.wnd = NULL,
                               path.fmd = NULL,
                               path.ros.adj = NULL) {
 
-  # Read a file of tabular dat, drop any blank lines or comment lines
-  # and return count of data records and the data as a character string.
+  # Read a file of tabular dat, drop any blank lines, comment lines or head lines
+  # (specifying 'METRIC' or 'ENGLISH') and return count of data records and the
+  # data as a character string.
+  #
   .read_file <- function(path) {
     x <- readLines(path)
 
@@ -48,11 +68,18 @@ create_input_file <- function(start.time,
     comment <- stringr::str_detect(x, "^\\s*\\#")
     x <- x[!comment]
 
+    header <- stringr::str_detect(tolower(x), "metric|english")
+    x <- x[!header]
+
     n <- length(x)
 
     x <- c(x, "")
-    list(n = n, text = paste(x, collapse = "\n"))
+    list(n = as.character(n), text = paste(x, collapse = "\n"))
   }
+
+
+  # This is used when there is no file to read
+  EmptyFile <- list(n = "", text = "")
 
 
   f <- system.file("extdata", "input_template.txt", package = "farsitebatch")
@@ -60,7 +87,6 @@ create_input_file <- function(start.time,
   txt <- paste(txt, collapse = "\n")
 
   fms <- .read_file(path.fms)
-  raws <- .read_file(path.raws)
 
   if (is.null(path.ros.adj)) path.ros.adj <- ""
 
@@ -72,15 +98,51 @@ create_input_file <- function(start.time,
     fmd.file <- path.fmd
   }
 
-  raws.units <- stringr::str_to_title(raws.units)
+  # check if we have RAWS weather data or separate weather (wtr) and wind (wnd) files
+  if (missing(path.raws) || .is_empty_parameter(path.raws)) {
+    # No path.raws so we need path.wtr and path.wnd
+    if (missing(path.wtr) || .is_empty_parameter(path.wtr) ||
+        missing(path.wnd) || .is_empty_parameter(path.wnd)) {
+
+      stop("You must provide either path.raws or both of path.wnd and path.wtr")
+    }
+
+    wtr <- .read_file(path.wtr)
+    wnd <- .read_file(path.wnd)
+    wtr.units <- weather.units
+    wnd.units <- weather.units
+
+    raws <- EmptyFile
+    raws.units <- ""
+    raws.elev <- ""
+
+  } else {
+    # Using RAWS data
+
+    raws <- .read_file(path.raws)
+    raws.units <- weather.units
+
+    wtr <- EmptyFile
+    wnd <- EmptyFile
+    wtr.units <- ""
+    wnd.units <- ""
+  }
+
+
 
   # Note: glue takes the following from the function environment:
-  # start.time, end.time, raws.elev, raws.units, fmd.switch, fmd.
+  # start.time, end.time,
+  # raws.elev, raws.units, wtr.units, wnd.units
+  # fmd.switch, fmd.
   input <- glue::glue(txt,
                       num.fms = fms$n,
                       data.fms = fms$text,
                       num.raws = raws$n,
                       data.raws = raws$text,
+                      num.wtr = wtr$n,
+                      data.wtr = wtr$text,
+                      num.wnd = wnd$n,
+                      data.wnd = wnd$text,
                       ros.adj.file = path.ros.adj)
 
   input
@@ -323,5 +385,10 @@ get_final_time <- function(outdir, prefix) {
 
 .check_file_exists <- function(...) {
   for (f in list(...)) if (!file.exists(f)) stop("Cannot find file: ", f)
+}
+
+
+.is_empty_parameter <- function(x) {
+  is.null(x) || (stringr::str_length( stringr::str_trim(x) ) == 0)
 }
 

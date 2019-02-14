@@ -84,8 +84,8 @@ raws_to_farsite <- function(rawsfile, wtrfile, wndfile, elev,
       t <- .$temp
       tmin <- min(t)
       tmax <- max(t)
-      hour.tmin <- .$hour[which(t == tmin)]
-      hour.tmax <- .$hour[which(t == tmax)]
+      hour.tmin <- min( .$hour[which(t == tmin)] )
+      hour.tmax <- min( .$hour[which(t == tmax)] )
 
       rain.total <- round(sum(.$rain))
 

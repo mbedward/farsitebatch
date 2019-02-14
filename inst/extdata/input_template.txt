@@ -24,6 +24,15 @@ RAWS_UNITS: {raws.units}
 RAWS: {num.raws}
 {data.raws}
 
+WEATHER_DATA_UNITS: {wtr.units}
+
+WEATHER_DATA: {num.wtr}
+{data.wtr}
+
+WIND_DATA_UNITS: {wtr.units}
+
+WIND_DATA: {num.wnd}
+{data.wnd}
 
 FOLIAR_MOISTURE_CONTENT: 100
 CROWN_FIRE_METHOD: Finney
